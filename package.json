@@ -6,6 +6,7 @@
     "node": "20.x"
   },
   "scripts": {
+    "dev:watch": "vue-cli-service serve",
     "dev": "npm run serve",
     "serve": "node server.js",
     "build": "vue-cli-service build",

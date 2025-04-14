@@ -37,7 +37,39 @@
       />
     </div>
 
-    <!-- Notes Field -->
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-gray-700">Period</label>
+      <div class="flex space-x-4">
+        <label class="inline-flex items-center">
+          <input
+            type="checkbox"
+            v-model="formData.morning"
+            :disabled="loading"
+            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+          />
+          <span class="ml-2 text-sm text-gray-700">Morning</span>
+        </label>
+        <label class="inline-flex items-center">
+          <input
+            type="checkbox"
+            v-model="formData.afternoon"
+            :disabled="loading"
+            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+          />
+          <span class="ml-2 text-sm text-gray-700">Afternoon</span>
+        </label>
+        <label class="inline-flex items-center">
+          <input
+            type="checkbox"
+            v-model="formData.night"
+            :disabled="loading"
+            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+          />
+          <span class="ml-2 text-sm text-gray-700">Night</span>
+        </label>
+      </div>
+    </div>
+
     <div class="space-y-2">
       <label for="notes" class="block text-sm font-medium text-gray-700">
         Notes
@@ -98,6 +130,9 @@ export default {
         profit: "",
         hours_worked: "",
         notes: "",
+        morning: false,
+        afternoon: false,
+        night: false,
       },
       loading: false,
       error: null,
@@ -119,6 +154,9 @@ export default {
           profit: this.formData.profit.toString(),
           hours_worked: this.formData.hours_worked.toString(),
           notes: this.formData.notes.toString(),
+          morning: this.formData.morning,
+          afternoon: this.formData.afternoon,
+          night: this.formData.night,
         };
 
         const response = await profitService.createProfit(profitData);
@@ -131,6 +169,9 @@ export default {
           profit: "",
           hours_worked: "",
           notes: "",
+          morning: false,
+          afternoon: false,
+          night: false,
         };
       } catch (error) {
         console.error("Error saving profit:", error);
