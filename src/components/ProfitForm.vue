@@ -20,53 +20,53 @@
       </div>
     </div>
 
-    <!-- Hours Worked Field -->
+    <!-- Start Date and Time Field -->
     <div class="space-y-2">
-      <label for="hours" class="block text-sm font-medium text-gray-700">
-        Hours Worked
+      <label for="startDate" class="block text-sm font-medium text-gray-700">
+        Start Date and Time
       </label>
-      <input
-        id="hours"
-        v-model="formData.hours_worked"
-        type="number"
-        step="0.5"
-        required
-        :disabled="loading"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        placeholder="Enter hours worked"
-      />
+      <div class="flex space-x-2">
+        <input
+          id="startDate"
+          v-model="formData.startDate"
+          type="date"
+          required
+          :disabled="loading"
+          class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+        <input
+          id="startTime"
+          v-model="formData.startTime"
+          type="time"
+          required
+          :disabled="loading"
+          class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+      </div>
     </div>
 
+    <!-- End Date and Time Field -->
     <div class="space-y-2">
-      <label class="block text-sm font-medium text-gray-700">Period</label>
-      <div class="flex space-x-4">
-        <label class="inline-flex items-center">
-          <input
-            type="checkbox"
-            v-model="formData.morning"
-            :disabled="loading"
-            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-          />
-          <span class="ml-2 text-sm text-gray-700">Morning</span>
-        </label>
-        <label class="inline-flex items-center">
-          <input
-            type="checkbox"
-            v-model="formData.afternoon"
-            :disabled="loading"
-            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-          />
-          <span class="ml-2 text-sm text-gray-700">Afternoon</span>
-        </label>
-        <label class="inline-flex items-center">
-          <input
-            type="checkbox"
-            v-model="formData.night"
-            :disabled="loading"
-            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-          />
-          <span class="ml-2 text-sm text-gray-700">Night</span>
-        </label>
+      <label for="endDate" class="block text-sm font-medium text-gray-700">
+        End Date and Time
+      </label>
+      <div class="flex space-x-2">
+        <input
+          id="endDate"
+          v-model="formData.endDate"
+          type="date"
+          required
+          :disabled="loading"
+          class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+        <input
+          id="endTime"
+          v-model="formData.endTime"
+          type="time"
+          required
+          :disabled="loading"
+          class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
       </div>
     </div>
 
@@ -128,11 +128,11 @@ export default {
     return {
       formData: {
         profit: "",
-        hours_worked: "",
+        startDate: "",
+        startTime: "",
+        endDate: "",
+        endTime: "",
         notes: "",
-        morning: false,
-        afternoon: false,
-        night: false,
       },
       loading: false,
       error: null,
@@ -141,7 +141,13 @@ export default {
 
   methods: {
     async submitProfit() {
-      if (!this.formData.profit || !this.formData.hours_worked) {
+      if (
+        !this.formData.profit ||
+        !this.formData.startDate ||
+        !this.formData.startTime ||
+        !this.formData.endDate ||
+        !this.formData.endTime
+      ) {
         this.error = "Please fill in all required fields";
         return;
       }
@@ -150,13 +156,18 @@ export default {
       this.error = null;
 
       try {
+        const startDateTime = new Date(
+          `${this.formData.startDate}T${this.formData.startTime}`
+        );
+        const endDateTime = new Date(
+          `${this.formData.endDate}T${this.formData.endTime}`
+        );
+
         const profitData = {
           profit: this.formData.profit.toString(),
-          hours_worked: this.formData.hours_worked.toString(),
+          start_date: startDateTime.toISOString(),
+          end_date: endDateTime.toISOString(),
           notes: this.formData.notes.toString(),
-          morning: this.formData.morning,
-          afternoon: this.formData.afternoon,
-          night: this.formData.night,
         };
 
         const response = await profitService.createProfit(profitData);
@@ -167,11 +178,11 @@ export default {
         // Reset form
         this.formData = {
           profit: "",
-          hours_worked: "",
+          startDate: "",
+          startTime: "",
+          endDate: "",
+          endTime: "",
           notes: "",
-          morning: false,
-          afternoon: false,
-          night: false,
         };
       } catch (error) {
         console.error("Error saving profit:", error);
